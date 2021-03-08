@@ -18,7 +18,7 @@ public class AppConfig {
         return new MessageRepository();
     }
 
-    @Bean("messageService12") // 자동으로 messageService 이라는 이름이 붙는다. 이 이름은 메소드의 이름이다.
+    @Bean //("messageService12") // 자동으로 messageService 이라는 이름이 붙는다. 이 이름은 메소드의 이름이다.
     MessageService messageService() {
         return new MessageService(messageRepository());
     }
