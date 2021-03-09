@@ -8,14 +8,20 @@
     <artifactId>modernJava</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-
-    <properties>
-        <spring.version>5.2.3.RELEASE</spring.version>
-        <log4j.version>2.10.0</log4j.version>
-    </properties>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.0.0.RELEASE</version>
+    </parent>
 
     <dependencies>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>2.0.0.RELEASE</version>
+        </dependency>
+
+        <!--<dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
             <version>${spring.version}</version>
@@ -29,7 +35,7 @@
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
             <version>${log4j.version}</version>
-        </dependency>
+        </dependency>-->
 
     </dependencies>
 
@@ -45,22 +51,25 @@
      https://www.egovframe.go.kr/wiki/doku.php?id=egovframework:dev:dep:build:maven 참고
      -->
     <build>
-        <finalName>messages</finalName><!--messages-jar-with-dependencies.jar 이라는 파일 생성-->
+
+
+        <!--
+        <finalName>messages</finalName>&lt;!&ndash;messages-jar-with-dependencies.jar 이라는 파일 생성&ndash;&gt;
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId><!-- 메이븐 플러그인 사용 -->
-                <artifactId>maven-assembly-plugin</artifactId><!-- 식별자 -->
-                <executions><!-- 실행옵션 -->
+                <groupId>org.apache.maven.plugins</groupId>&lt;!&ndash; 메이븐 플러그인 사용 &ndash;&gt;
+                <artifactId>maven-assembly-plugin</artifactId>&lt;!&ndash; 식별자 &ndash;&gt;
+                <executions>&lt;!&ndash; 실행옵션 &ndash;&gt;
                     <execution>
-                        <phase>package</phase><!-- package 단계 실행 : 컴파일, 테스트, 빌드를 수행하여 패키지 파일(jar나 war 같은 실행가능한 파일)을 생성한다. -->
-                        <goals><goal>single</goal></goals><!-- single jar 파일로 생성하기 위한 옵션이다. -->
+                        <phase>package</phase>&lt;!&ndash; package 단계 실행 : 컴파일, 테스트, 빌드를 수행하여 패키지 파일(jar나 war 같은 실행가능한 파일)을 생성한다. &ndash;&gt;
+                        <goals><goal>single</goal></goals>&lt;!&ndash; single jar 파일로 생성하기 위한 옵션이다. &ndash;&gt;
                         <configuration>
                             <archiveBaseDirectory>${project.basedir}</archiveBaseDirectory>
                             <archive>
-                                <manifest><mainClass>app.messages.Application</mainClass></manifest><!-- 메인 클래스 위치 -->
+                                <manifest><mainClass>app.messages.Application</mainClass></manifest>&lt;!&ndash; 메인 클래스 위치 &ndash;&gt;
                             </archive>
                             <descriptorRefs>
-                                <descriptorRef>jar-with-dependencies</descriptorRef><!-- 뒤에 붙는 이름 jar-with-dependencies -->
+                                <descriptorRef>jar-with-dependencies</descriptorRef>&lt;!&ndash; 뒤에 붙는 이름 jar-with-dependencies &ndash;&gt;
                             </descriptorRefs>
                         </configuration>
                     </execution>
@@ -69,7 +78,7 @@
             </plugin>
 
         </plugins>
-
+-->
     </build>
 
 </project>
