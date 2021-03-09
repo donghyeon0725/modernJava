@@ -8,8 +8,9 @@
     </Appenders>
     <!-- 로거이다. -->
     <Loggers>
-        <Root level="info">
+        <Logger name="app.messages" level="INFO">
             <AppenderRef ref="Console"/>
-        </Root>
+        </Logger>
+        <Root level="ERROR" />
     </Loggers>
 </Configuration>

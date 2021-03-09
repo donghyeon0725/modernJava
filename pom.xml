@@ -15,10 +15,16 @@
     </parent>
 
     <dependencies>
+        <!-- 스프링 부트 스타터팩 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>2.0.0.RELEASE</version>
+        </dependency>
+
+        <!-- 정의한 HTML 템플릿 기반으로 HTML 코드 생성하는 템플릿 엔진을 추가 / 직접 라이브러리를 추가하는 것이 아닌 부트가 할 수 있도록 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
 
         <!--<dependency>
@@ -52,33 +58,14 @@
      -->
     <build>
 
-
-        <!--
-        <finalName>messages</finalName>&lt;!&ndash;messages-jar-with-dependencies.jar 이라는 파일 생성&ndash;&gt;
+        <finalName>messages</finalName><!--messages-jar-with-dependencies.jar 이라는 파일 생성-->
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>&lt;!&ndash; 메이븐 플러그인 사용 &ndash;&gt;
-                <artifactId>maven-assembly-plugin</artifactId>&lt;!&ndash; 식별자 &ndash;&gt;
-                <executions>&lt;!&ndash; 실행옵션 &ndash;&gt;
-                    <execution>
-                        <phase>package</phase>&lt;!&ndash; package 단계 실행 : 컴파일, 테스트, 빌드를 수행하여 패키지 파일(jar나 war 같은 실행가능한 파일)을 생성한다. &ndash;&gt;
-                        <goals><goal>single</goal></goals>&lt;!&ndash; single jar 파일로 생성하기 위한 옵션이다. &ndash;&gt;
-                        <configuration>
-                            <archiveBaseDirectory>${project.basedir}</archiveBaseDirectory>
-                            <archive>
-                                <manifest><mainClass>app.messages.Application</mainClass></manifest>&lt;!&ndash; 메인 클래스 위치 &ndash;&gt;
-                            </archive>
-                            <descriptorRefs>
-                                <descriptorRef>jar-with-dependencies</descriptorRef>&lt;!&ndash; 뒤에 붙는 이름 jar-with-dependencies &ndash;&gt;
-                            </descriptorRefs>
-                        </configuration>
-                    </execution>
-
-                </executions>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-
         </plugins>
--->
+
     </build>
 
 </project>
