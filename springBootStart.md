@@ -48,6 +48,8 @@ SpringBoot 시작
 ---
 
 # 어노테이션
+ * @RequestBody
+    - HTTP 요청 몸체(body)를 자바 객체로 변환해서 받을 수 있도록 함. @ResponseBody 는 HTTP 응답 객체로 만들어 반환을 하기 위함임
  * @ResponseBody 
     - 리턴 타입이 경로가 아닌, Stream을 타고 나갈 수 있도록 설정함. 원래는 HttpServletResponse 객체를 통해 얻은 스트림으로 해야하는 동작을 프레임워크단에서 처리해줌
     - 응답의 반환값을 본문으로 사용하는 효과를 줌
@@ -57,7 +59,7 @@ SpringBoot 시작
     - 이 클래스가 컨트롤러임을 알린다. 
  * @GetMapping("url")
     - @RequestMapping(value="url", method=RequestMethod.GET) 의 축약형이다. post, delete, put 도 동일
- * RestController
+ * @RestController
     - RESTful API 를 만들기 위해 사용하는 컨트롤러로 @Controller와 @ResponseBody의 조합이다.
  
  
