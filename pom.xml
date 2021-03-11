@@ -40,15 +40,15 @@
         </dependency>
 
         <!-- 하이버네트 사용을 위한 의존성 -->
-        <!--<dependency>
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
         </dependency>
-        &lt;!&ndash; 하이버네트 사용을 위한 의존성 &ndash;&gt;
+        <!-- 하이버네트 사용을 위한 의존성 -->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-        </dependency>-->
+        </dependency>
 
         <!-- 템플릿 엔진 -->
         <dependency>

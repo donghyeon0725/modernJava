@@ -28,6 +28,7 @@ public class MessageController {
     @PostMapping("/messages")
     @ResponseBody
     public ResponseEntity<Message> saveMessage(@RequestBody MessageData data) {
+
         //HTTP 요청 몸체를 자바 객체로 변환
         Message saved = messageService.save(data.getText());
         if (saved == null) {
@@ -36,6 +37,8 @@ public class MessageController {
         // 정상인 응답 상태를 반환한다.
         return ResponseEntity.ok(saved);
     }
+
+
 
 
 }
