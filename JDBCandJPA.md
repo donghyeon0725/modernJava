@@ -58,3 +58,16 @@ PreparedStatement ps = c.prepareStatement(insertSql, Statement.RETURN_GENERATED_
 * c.close(); 를 통해 커넥션을 닫아야 커넥션 풀로 연결이 반환되고 그렇지 않으면 다른 연결에 의해 재사용 된다.
 * 최종적으로 DataSourceUtils.releaseConnection(c, dataSource); 를 통해 연결을 반환했다.
 
+스프링 JDBC
+-
+* JDBC는 JDBC 위의 추상화 계층을 제공함. jdbcTemplate 클래스가 핵심. 따라서 쿼리문을 준비하고 쿼리 결과를 처리할 방법만 지정하면 됨  
+* 한편, NamedParameterJdbcTemplate 클래스는 JdbcTemplate 객체를 래핑한 클래스로 JDBC의 "?" 플레이스홀더 대신에 지정한 이름을 지정한 매개변수를 사용할 수 있도록 한다.
+* 또한 스프링 JDBC는 DB에서 제공하는 메타데이터로, JDBC 작업을 단순화하기 위해 SimpleJdbcInsert와 SimpleJdbcCall을 제공한다.
+* 메타 데이터(컬럼타입)는 DatabaseMetaData 인스턴스를 반환하는 connection.getMetaData() 메소드를 호출해 가져온다.
+* 그러면 메타데이터에 대해 걱정할 필요가 없다.
+
+* 스프링 JDBC 는 작업을 자바 객체로 표현하는 방법도 제공
+* MappingSqlQuery 객체를 생성해서 DB 쿼리를 실행
+* SqlUpdate 객체를 생성해 삽입/업데이트 작업 수행 가능
+* 그리고 StoreProcedure 객체를 새성해 DB에서 저장 프로시저를 호출할 수 있음
+* 이 객체들은 재사용이 가능하며 스레드 세이프(멀티 스레드가 접근해도 문제가 없음)이다
