@@ -40,10 +40,198 @@ AOP 사용전에는 모든 메소드에 보안 검사를 처리하는 코드를 
 
 구조도는 아래와 같다.
 
-![AOP 구조도](./src/main/resources/image/aopStructure.png)
+![AOP 구조도](../src/main/resources/image/aopStructure.png)
 ---
 
 조인 포인트
 -
 AOP 에서 조인포인트(Join Points)는 특정 프로그램이 실행되는 지점이다.
 여기서는 methodA(), methodB(), methodC() 가 그 지점에 해당된다.
+AspectJ와 같은 AOP 다른 구현체는 필드 접근과 예외 발생에 대한 조인포인트도 지원한다.
+
+
+어드바이스
+-
+AOP에서 AspectJ 구현체 내부의 check 메소드는 어드바이스(Advices) 라고 부른다.  
+어드바이스는 특정 관심사를 처리하는 행동이다.  
+다음과 같은 다양한 유형의 어드바이스가 있다.
+
+* Before advice(이전): 조인 포인트 이전에 실행되는 어드바이스. 예외를 던지지 않는 한, 조인포인트에 도달하는 코드 실행을 막을 수는 없다.
+   - @Before 어노테이션
+* After(이후): 조인포인트 실행 후
+   - @After
+* After returning advice(정상적 반환 이후): 예외를 던지지 않고 조인 포인트가 정상적으로 완료된 후 실행되는 어드바이스.
+   - @AfterReturning 어노테이션
+* After throwing advice(예외 발생 이후): 예외를 던져 메소드가 종료될 때 실행되는 어드바이스.
+   - @AfterThrowing 어노테이션
+* After Advice(이후): 조인 포인트 실행과 관계 없이 실행되는 어드바이스. 이것은 try ...catch의 final 블록과 같다.
+   - @After 어노테이션
+* Around Advice(메소드 실행 전후): 조인 포인트를 둘러싼 어드바이스. 이 유형의 어드바이스는 코드 실행을 완전히 제어하므로 가장 강력하다.
+   - @Around 어노테이션
+   
+시작하기
+-
+1. pom.xml에 명시해주기
+```html
+<!-- 스프링 부트 aop -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-aop</artifactId>
+</dependency>
+```
+
+2. 어노테이션 추가
+```java
+@Aspect
+@Component
+public class SecurityChecker {
+    private static final Logger logger = LoggerFactory.getLogger(SecurityChecker.class);
+}
+```
+관리해줄 클래스를 위와 같이 생성
+
+3. 각각의 시점을 정하기
+```java
+@Around("execution(* app.messages..*.welcome(..))")
+public Object Around(ProceedingJoinPoint joinPoint) throws Throwable {
+    logger.debug("Around Start");
+    Object response = null;
+        try {
+            response = joinPoint.proceed();
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+    logger.debug("Around End");
+    return response;
+}
+@After("execution(* app.messages.MessageController.welcome(..))")
+public void After(JoinPoint joinPoint) {
+    logger.debug(joinPoint.getSignature().getName() + " After");
+    // ProceedingJoinPoint joinPoint 는 오직 Around 어노테이션에만 적용할 수 있다.
+}
+
+@AfterReturning("execution(* app.messages.MessageController.welcome(..))")
+public void AfterReturning(JoinPoint joinPoint) {
+    logger.debug(joinPoint.getSignature().getName() + " AfterReturning");
+    // ProceedingJoinPoint joinPoint 는 오직 Around 어노테이션에만 적용할 수 있다.
+
+}
+
+@AfterThrowing(value="execution(* app.messages.MessageController.welcome(..))", throwing = "e")
+public void AfterThrowing(JoinPoint joinPoint, Exception e) {
+    logger.debug(joinPoint.getSignature().getName() + " AfterThrowing");
+    logger.debug(e.getMessage());
+}
+```
+* 에러가 발생했을 때 
+   - Around Start
+   - welcome - 컨트롤러
+   - Around End
+   - welcome After
+   - welcome AfterThrowing
+
+* 에러가 발생하지 않았을 때 
+   - Around Start
+   - welcome - 컨트롤러
+   - Around End
+   - welcome After
+   - welcome AfterReturning
+
+* AfterThrowing 의 경우 Exception 관리를 해야하는데 이럴 때 어노테이션에 속성값을 줘야하는데 아래와 같이 주면 된다
+   - @AfterThrowing(value="execution(* app.messages.MessageController.welcome(..))", throwing = "e")
+   - 그리고 이것을 AfterThrowing(JoinPoint joinPoint, Exception e) 이런식으로 인자로 받아 사용하면 된다.
+   
+
+참고사항 
+-
+* Around 어노테이션은 생각할 점이 많다.
+```java
+@Around("execution(* app.messages..*.welcome(..))")
+public Object Around(ProceedingJoinPoint joinPoint) throws Throwable {
+    logger.debug("Around Start");
+    Object response = null;
+        try {
+            response = joinPoint.proceed();
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+    logger.debug("Around End");
+    return response;
+}
+```
+* 메소드 실행 전 : joinPoint 에서 모든 파라미터를 받아서 HttpServletRequest 을 받아서 Parameter를 변경할 수 있다.
+* 메소드 실행 하기 : 메소드에 들어갈 파라미터를 joinPoint.proceed(파라미터) 안에 넣어줘서 컨트롤러가 사용할 파라미터를 변경할 수 있다.
+* 메소드 실행 후 : 사용자가 받을 응답을 임의로 변경할 수 있다. 
+---
+
+* 메소드 실행 전 args 변경하는 메소드
+```java
+/**
+ * 받은 파라미터를 변경해주는 메소드
+ * */
+public Object[] setServletRequestArgs(ProceedingJoinPoint joinPoint, Map<String, Object> map) {
+    Object[] result = joinPoint.getArgs();
+
+    for (Object obj : result) {
+        if (obj instanceof HttpServletRequest || obj instanceof MultipartHttpServletRequest) {
+            HttpServletRequest request = (HttpServletRequest) obj;
+
+            Iterator<String> keys = map.keySet().iterator();
+            while( keys.hasNext() ){
+                String key = keys.next();
+                Object value = map.get(key);
+
+                request.setAttribute(key, value);
+            }
+        }
+    }
+
+    return result;
+}
+```
+
+* 받은 값을 아예 새로운 값으로 변경하는 로직
+```java
+@Around("execution(* app.messages..*.welcome(..))")
+public Object Around(ProceedingJoinPoint joinPoint) throws Throwable {
+    logger.debug("Around Start");
+    Object[] newArgs = {};
+
+    Object response = null;
+    try {
+        response = joinPoint.proceed(newArgs);
+    } catch (Throwable e) {
+        e.printStackTrace();
+    }
+    logger.debug("Around End");
+    return response;
+}
+```
+
+
+   
+포인트컷
+-
+* AOP 에서 포인트컷이란. 일치하는 여러 조인포인트를 결합한 것.
+* 같은 조인포인트(함수)를 묶어서 관리할 수 있게 해주는 것
+* 위 구조도에서 @Around 어노테이션의 값인 execution(* ... 이 어라운드 어드바이스가 실행되어야 하는 시점을 지정한 포인트것 표현식이다.
+* 다음과 같이 @Point 어노테이션으로 포인트컷 시그니처를 선언할 수도 있다.
+```java
+@Aspect
+@Component
+public class SecurityChecker {
+    @Pointcut("execution(* app.messages..*.*(..))")
+    public void everyMessageMethod() {}
+    
+    @Around("everyMessageMethod()")
+    public Object checkSecurity (ProceedingJoinPoint joinnPoint) {
+        ...
+    }
+}
+```
+* 포인트컷의 시그니처만 정의했기 때문에 여기서 everyMessageMethod 는 반환 값이 없고 비어있다.
+* checkSecurity() 의 @Around 어노테이션에서 이 메소드를 포인트컷 표현식으로 사용한다.
+* 이전 포인트컷 표현식에서 실행은 스프링 AOP에 어떤 것을 매칭할지 알려주는 PCD(포인트컷 지정자, pointcut designator)이다.
+* 또 다른 PDC로는 @annotation이 있다.
+
+

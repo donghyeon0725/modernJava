@@ -1,11 +1,14 @@
 package app.messages;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigInteger;
 
 @Controller
@@ -14,15 +17,21 @@ public class MessageController {
 
     private MessageService messageService;
 
+    private static final Logger logger = LoggerFactory.getLogger(MessageController.class);
+
     public MessageController(MessageService messageService) {
         this.messageService = messageService;
     }
 
     @GetMapping("/welcome")
-    public ModelAndView welcome() {
-        ModelAndView mv = new ModelAndView("welcome");
-        mv.addObject("message", "Hello, Welcome to Spring Boot!");
-        return mv;
+    public String welcome(HttpServletRequest req) {
+        req.setAttribute("message", "Hello, Welcome to Spring Boot!");
+        logger.debug("welcome");
+
+        if (false) {
+            throw new RuntimeException("에러가 발생했습니다.");
+        }
+        return "welcome";
     }
 
     @PostMapping("/messages")
