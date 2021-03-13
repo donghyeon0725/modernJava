@@ -286,3 +286,6 @@ public void everyMessageMethod() {
 => @annotation 표현식을 통해서 어노테이션 선택
 => 어노테이션 패키지 경로 명시해줘야함
 
+스프링 AOP 흐름도
+-
+![스프링 AOP 흐름도](../src/main/resources/image/aopFlow.png)
