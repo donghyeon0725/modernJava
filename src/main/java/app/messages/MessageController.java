@@ -4,12 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.math.BigInteger;
 
 @Controller
 @RequestMapping("/messages")
@@ -23,6 +20,7 @@ public class MessageController {
         this.messageService = messageService;
     }
 
+    @SecurityCheck
     @GetMapping("/welcome")
     public String welcome(HttpServletRequest req) {
         req.setAttribute("message", "Hello, Welcome to Spring Boot!");
@@ -33,6 +31,7 @@ public class MessageController {
         }
         return "welcome";
     }
+
 
     @PostMapping("/messages")
     @ResponseBody

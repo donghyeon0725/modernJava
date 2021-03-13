@@ -207,8 +207,6 @@ public Object Around(ProceedingJoinPoint joinPoint) throws Throwable {
     return response;
 }
 ```
-
-
    
 포인트컷
 -
@@ -221,9 +219,11 @@ public Object Around(ProceedingJoinPoint joinPoint) throws Throwable {
 @Component
 public class SecurityChecker {
     @Pointcut("execution(* app.messages..*.*(..))")
-    public void everyMessageMethod() {}
+    public void everyMessageMethod() {
+        logger.debug("everyMessageMethod 메소드는 실행되지 않습니다.");
+    }
     
-    @Around("everyMessageMethod()")
+    @Around("everyMessageMethod()") => everyMessageMethod 에 붙은 어노테이션 Pointcut 에 표현식으로 준 포인트만 참고하기 위해서 사용했다.
     public Object checkSecurity (ProceedingJoinPoint joinnPoint) {
         ...
     }
@@ -233,5 +233,56 @@ public class SecurityChecker {
 * checkSecurity() 의 @Around 어노테이션에서 이 메소드를 포인트컷 표현식으로 사용한다.
 * 이전 포인트컷 표현식에서 실행은 스프링 AOP에 어떤 것을 매칭할지 알려주는 PCD(포인트컷 지정자, pointcut designator)이다.
 * 또 다른 PDC로는 @annotation이 있다.
+* everyMessageMethod 를 static으로 선언하면 외부에서 SecurityChecker.everyMessageMethod() 로 포인트에 접근이 가능하다.
 
+
+프락시
+-
+* 애스팩트를 구현하기 위해서 JDK 동적 프락시는 인터페이스를 기반으로 객체를 생성한다.
+* 인터페이스를 구현하지 않으면 AOP는 CGLIB([프락시객체를 생성해주는 라이브러리](https://javacan.tistory.com/entry/114 "프락시객체를 생성해주는 라이브러리")) 로 대상 클래스를 하위 클래스로 만들어 프락시를 생성한다.
+* 보안 검사 예제에서 스프링 AOP는 CGLIB 로 프락시 객체를 생성한다.
+
+위빙
+-
+* AOP에서 위빙은 다른 필수 객체와 에스팩트를 연결해 어드바이스 객체를 생성하는 프로세스
+* 스프링 AOP에서 위빙은 런타임 동안 발생하지만, AspectJ는 위빙을 컴파일 타임 또는 로드 타임 동안 수행한다.
+
+어노테이션을 포인트컷(포인트되는 어드바이스)으로 활용하기
+-
+1. 어노테이션 생성
+2. 메소드에 어노테이션 붙여주기
+3. AOP에서 Point 속성 값으로 해당 어노테이션이 붙은 메소드를 선택해주기
+
+* 어노테이션 생성
+```java
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface SecurityCheck {
+}
+```
+
+* 메소드에 어노테이션 생성하기
+```java
+@SecurityCheck // 추가
+@GetMapping("/welcome")
+public String welcome(HttpServletRequest req) {
+    req.setAttribute("message", "Hello, Welcome to Spring Boot!");
+    logger.debug("welcome");
+
+    if (false) {
+        throw new RuntimeException("에러가 발생했습니다.");
+    }
+    return "welcome";
+}
+```
+
+* 포인트컷으로 만들기
+```java
+@Pointcut("@annotation(app.messages.SecurityCheck)")
+public void everyMessageMethod() {
+    logger.debug("everyMessageMethod");
+}
+```
+=> @annotation 표현식을 통해서 어노테이션 선택
+=> 어노테이션 패키지 경로 명시해줘야함
 

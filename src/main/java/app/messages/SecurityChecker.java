@@ -1,6 +1,5 @@
 package app.messages;
 
-import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.slf4j.Logger;
@@ -42,7 +41,7 @@ public class SecurityChecker {
         return result;
     }
 
-    @Around("execution(* app.messages..*.welcome(..))")
+    //@Around("execution(* app.messages..*.welcome(..))")
     public Object Around(ProceedingJoinPoint joinPoint) throws Throwable {
         logger.debug("Around Start");
 
@@ -63,46 +62,27 @@ public class SecurityChecker {
         return response;
     }
 
-    /*
-    Around Start
-    welcome
-    Around End
-    welcome After
-    welcome AfterReturning
-
-    Around Start
-    welcome
-    Around End
-    welcome After
-    welcome AfterThrowing
-    */
-    @After("execution(* app.messages.MessageController.welcome(..))")
-    public void After(JoinPoint joinPoint) {
-        logger.debug(joinPoint.getSignature().getName() + " After");
-        // ProceedingJoinPoint joinPoint 는 오직 Around 어노테이션에만 적용할 수 있다.
+/*    @Pointcut("execution(* app.messages..*.*(..))")
+    public void everyMessageMethod() {
+        logger.debug("everyMessageMethod");
+    }*/
+    @Pointcut("@annotation(SecurityCheck)")
+    public void everyMessageMethod() {
+        logger.debug("everyMessageMethod");
     }
 
-    @AfterReturning("execution(* app.messages.MessageController.welcome(..))")
-    public void AfterReturning(JoinPoint joinPoint) {
-        logger.debug(joinPoint.getSignature().getName() + " AfterReturning");
-        // ProceedingJoinPoint joinPoint 는 오직 Around 어노테이션에만 적용할 수 있다.
 
-    }
-
-    @AfterThrowing(value="execution(* app.messages.MessageController.welcome(..))", throwing = "e")
-    public void AfterThrowing(JoinPoint joinPoint, Exception e) {
-        logger.debug(joinPoint.getSignature().getName() + " AfterThrowing");
-        logger.debug(e.getMessage());
-        // ProceedingJoinPoint joinPoint 는 오직 Around 어노테이션에만 적용할 수 있다.
-
-        /*
-        if (true) {
-            throw new RuntimeException("에러가 발생했습니다.");
+    @Around("everyMessageMethod()")
+    public Object checkSecurity(ProceedingJoinPoint joinPoint) throws Throwable {
+        logger.debug("Around Start");
+        Object response = null;
+        try {
+            response = joinPoint.proceed();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        를 사용하니 에러가 발생했다.
-        이를 통해서 에러 발생시
-        */
-
+        logger.debug("Around End");
+        return response;
     }
 
     /*@Pointcut("@annotation(SecurityCheck)")
