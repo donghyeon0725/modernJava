@@ -34,7 +34,8 @@ public class MessageRepository {
         LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
         sessionFactory = sessionFactoryBean.getObject().openSession();
         */
-        Session session = sessionFactory.openSession();
+        //Session session = sessionFactory.openSession();
+        Session session = sessionFactory.getCurrentSession();
         session.save(message);
         return message;
     }
