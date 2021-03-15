@@ -107,3 +107,13 @@ public ModelAndView welcome() {
 ---
 
 
+Autoconfiguration
+-
+* spring-boot-autoconfigure 는 spring-boot-startter-* 의 의존성이다.
+* spring-boot-autoconfigure 는 @SpringBootApplication은 다음 3가지 어노테이션의 조합이다.
+    - @SpringBootConfiguration
+    - @EnableAutoConfiguration
+    - @ComponentScan
+
+
+
