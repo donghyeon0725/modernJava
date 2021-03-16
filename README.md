@@ -25,6 +25,6 @@
 <details>
     <summary>자세히</summary>
 
-[코드로 가기](src/main/java/app/reflection/AnnotationHandler.java "")
+[코드로 가기](src/main/java/app/reflection/AnnotationHandler.java#L40 "")
 </details>
 
