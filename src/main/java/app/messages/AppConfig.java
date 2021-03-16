@@ -6,8 +6,11 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.util.Arrays;
 
@@ -17,6 +20,7 @@ import java.util.Arrays;
 * */
 @Configuration
 @ComponentScan("app.messages")
+@EnableTransactionManagement
 public class AppConfig {
 
     private DataSource dataSource;
@@ -49,4 +53,11 @@ public class AppConfig {
         return sessionFactoryBean;
     }
 
+    @Bean
+    public HibernateTransactionManager transactionManager() {
+        HibernateTransactionManager transactionManager = new HibernateTransactionManager();
+        // PlatformTransactionManager 구현체를 생성해서 sessionFactory에서 생성하는 session을 set 해줬다.
+        transactionManager.setSessionFactory(sessionFactory().getObject());
+        return transactionManager;
+    }
 }

@@ -19,16 +19,16 @@ SpringBoot 시작
 * pom.xml 의 수정사항은 idea 가 자동으로 다운받아 주긴 하지만, 기본적으로 직접 maven을 이용해서 설치 명령을 내릴 수도 있다.
 * <parent> 태그는 부모의 스타터로부터 프로젝트 아티팩트를 상속받는다. 그리고 spring-boot-starter-web 의존성은 spring-context 모듈을 포함한다.
 
-![스프링 부트가 관리하고 있는 의존성들](./src/main/resources/image/boot_pom.png)
+![스프링 부트가 관리하고 있는 의존성들](../src/main/resources/image/boot_pom.png)
 스프링 부트가 관리하고 있는 의존성들
 
-![스프링 부트가 관리하고 있는 의존성들](./src/main/resources/image/bootReimport.png)
+![스프링 부트가 관리하고 있는 의존성들](../src/main/resources/image/bootReimport.png)
 스프링 프레임워크를 부트로 변경하면 다시 import 해줘야 한다.
 
-![스프링 부트 시작](./src/main/resources/image/bootStart.png)
+![스프링 부트 시작](../src/main/resources/image/bootStart.png)
 스프링 부트 시작 
 
-![스프링 부트 컨트롤러 생성](./src/main/resources/image/bootControllerSetting.png)
+![스프링 부트 컨트롤러 생성](../src/main/resources/image/bootControllerSetting.png)
 스프링 부트 컨트롤러 생성
 
 ```html
@@ -105,5 +105,15 @@ public ModelAndView welcome() {
 등등 을 지원한다.
 
 ---
+
+
+Autoconfiguration
+-
+* spring-boot-autoconfigure 는 spring-boot-startter-* 의 의존성이다.
+* spring-boot-autoconfigure 는 @SpringBootApplication은 다음 3가지 어노테이션의 조합이다.
+    - @SpringBootConfiguration
+    - @EnableAutoConfiguration
+    - @ComponentScan
+
 
 
